@@ -1,6 +1,6 @@
 
 module.exports = (sequelize, DataTypes) => {
-    const Guild = sequelize.define("guild", {
+    const Member = sequelize.define("Member", {
       
       /** CORE DATA
        * @guildID -> ID of the guild as a master/slave relation.
@@ -14,5 +14,5 @@ module.exports = (sequelize, DataTypes) => {
       nextLevel: { type: DataTypes.INTEGER, defaultValue: 500 }
     })
   
-    return Guild;
+    return Member;
   }

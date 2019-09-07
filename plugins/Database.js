@@ -20,9 +20,9 @@ const { withCache } = sequelizeCache(redisAdaptor)
 class Mind {
     constructor(client, options = {}){  
         this._client = client;
-        this.mind1 = new Sequelize('kirby', options.username, options.password, {
+        this.mind1 = new Sequelize(options.database, options.username, options.password, {
             host: options.host,
-            dialect: "postgres",
+            dialect: options.dialect,
             logging: options.logging
         });
         this.models = {};
@@ -57,6 +57,7 @@ class Mind {
   async loadCache() {
         this.models.users = withCache(this.mind1.import(__dirname + '/models/User.js'));
         this.models.guilds = withCache(this.mind1.import(__dirname + '/models/Guild.js'));
+        this.models.members = withCache(this.mind1.import(__dirname + '/models/Member.js'));
     }
 }
 

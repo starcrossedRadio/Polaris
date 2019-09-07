@@ -6,16 +6,16 @@ module.exports = class Avatar extends Command {
             name: "locale",
             aliases: ["language"],
             options: { localeKey: "commands" },
-            usage: [{ name: 'prefix', type: 'string', max: 3, min: 1, optional: false }],
             subcommands: {
                 list: { aliases: ["choices"]}
             }
         })
     }
     async handle({ msg, args, store, client }, responder) {
-        
+        responder.dialog(["abobora","ameixa"])
+
     }
     async list({msg, args, store, client}, responder) {
-        console.log(1)
+        console.log("sub comando")
     }
 }

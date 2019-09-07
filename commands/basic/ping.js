@@ -9,6 +9,6 @@ module.exports = class Avatar extends Command {
         })
     }
     async handle({ msg, args, store, client }, responder) {
-        return responder.send(responder.t("{{setPrefix}}", store.settings.locale))
+        return responder.send(responder.t("{{set_prefix}}", store.settings.locale, { "prefix":store.settings.prefix }))
     }
 }

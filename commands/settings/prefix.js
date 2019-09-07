@@ -14,7 +14,7 @@ module.exports = class Avatar extends Command {
         if (args.prefix === store.settings.prefix) return responder.error(responder.t("{{same_prefix}}", store.settings.lang, { user: msg.author.mention }));
         store.update({ "settings.prefix": args.prefix });
         await store.save().then(() => {
-            return responder.send(responder.t("{{setPrefix}}", store.settings.locale, { prefix: args.prefix }));
+            return responder.send(responder.t("{{set_prefix}}", store.settings.locale, { prefix: args.prefix }));
         })
     }
 }
