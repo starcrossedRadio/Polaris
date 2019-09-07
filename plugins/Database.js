@@ -20,7 +20,7 @@ const { withCache } = sequelizeCache(redisAdaptor)
 class Mind {
     constructor(client, options = {}){  
         this._client = client;
-        this.mind1 = new Sequelize('kirby', options.username, 123321, {
+        this.mind1 = new Sequelize('kirby', options.username, options.password, {
             host: options.host,
             dialect: "postgres",
             logging: options.logging
