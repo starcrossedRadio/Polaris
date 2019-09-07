@@ -1,0 +1,7 @@
+{
+    "title_avatar": "{{user}}'s Avatar",
+    "download_avatar": "[Download here!]({{url}})",
+    "set_prefix": "Easy and sweet like eat a candy! Your prefix is `{{prefix}}` now, chu! < 3",
+    "error_prefix": "Something goes whrong when I tried to change your prefix, darling... Try again later!",
+    "same_prefix": "that prefix was already set, darling. :("
+}
