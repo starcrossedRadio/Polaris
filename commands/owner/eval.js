@@ -5,41 +5,54 @@ module.exports = class Avatar extends Command {
     super(...args, {
       name: "eval",
       aliases: ["ev"],
-      options: { localeKey: "commands" },
+      options: { localeKey: "commands", adminOnly: true },
     })
   }
-  async handle({ msg, args, store, client }, responder) {
+  async handle({ msg, rawArgs, client }, responder) {
+    let codeEval = rawArgs.join(' ')
+    if (/token/gm.test(codeEval)) return responder.error('Vai tentar pegar o token da sua mãe')
+    const m = await msg.channel.createMessage('Executando...')
+    try {
+      const beforeRunning = Date.now()
+      let result = eval(codeEval)  //eslint-disable-line
 
-    const embed = new MessageEmbed();
-    const clean = text => typeof text == string ? text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)) : text;
+      if (result instanceof Promise) {
+        await result
+      }
 
-    message.channel.send("Digite o código a ser evaluado.").then(async () => {
-      const filter = m => m.author.id === message.author.id;
-      message.channel.awaitMessages(filter, { max: 1, time: 120000, errors: ["time"] })
-        .then(m => {
-
-          const toEval = m.map(mess => mess.content)[0];
-          let evaled = eval(toEval);
-
-          embed
-            .setTitle("Success! :D")
-            .setColor("GREEN")
-            .setDescription(`\`\`\`js ${evaled} \`\`\``)
-
-          return message.channel.send(embed);
-
-        })
-        .catch(err => {
-
-          embed
-            .setTitle("Error! :C")
-            .setColor("RED")
-            .setDescription(`\`\`\`js
-           ${err}\`\`\``)
-
-          return message.channel.send(embed);
-
-        })
-    })
+      if (typeof result !== 'string') result = require('util').inspect(result)
+      result = result.replace(/token:([a-zA-Z0-9])/gm, "")
+      const end = (Date.now() - beforeRunning)
+      msg.channel.createMessage({
+        embed: {
+          title: 'Sucesso!', // Title of the embed
+          description: `\`\`\`${result.slice(0, 2000)}\`\`\``,
+          author: { // Author property
+            name: msg.author.username,
+            icon_url: msg.author.avatarURL
+          },
+          color: 0x0000ff, // Color, either in hex (show), or a base-10 integer
+          fields: [ // Array of field objects
+            {
+              name: 'Tempo de execução', // Field title
+              value: `${(end / 60).toFixed(5)}s`, // Field
+              inline: true // Whether you want multiple fields in same line
+            },
+          ],
+        }
+      });
+    } catch (e) {
+      msg.channel.createMessage({
+        embed: {
+          title: 'Erro!', // Title of the embed
+          description: `\`\`\`${e.stack}\`\`\``,
+          author: { // Author property
+            name: msg.author.username,
+            icon_url: msg.author.avatarURL
+          },
+          color: 0x008000, // Color, either in hex (show), or a base-10 integer
+        }
+      });
+    }
   }
 }

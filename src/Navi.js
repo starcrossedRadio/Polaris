@@ -1,10 +1,10 @@
 const path = require('path')
-const Eris = require('eris').Client
-
+const Eris = require('eris')
+require("eris-additions")(Eris)
 const { Commander, Router, Sched, Interpreter, Logger } = require('./core')
 const { Collection } = require('./util')
 
-class Client extends Eris {
+class Client extends Eris.Client {
   constructor (options = {}) {
     super(options.token, options)
     this.selfbot = options.selfbot
@@ -12,7 +12,7 @@ class Client extends Eris {
     this.suppressWarnings = options.suppressWarnings
     this.noDefaults = options.noDefaults
     this.admins = Array.isArray(options.admins) ? options.admins : []
-
+    this.Eris = Eris
     this._resolvers = options.resolvers
 
     this.plugins = new Collection()

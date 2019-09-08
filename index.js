@@ -6,7 +6,8 @@ require("dotenv").config();
 
 const Navi = new Client({
   token: process.env.TOKEN,
-  modules: '/modules'
+  modules: '/modules',
+  admins: ['268351613771448320']
 });
 
 
