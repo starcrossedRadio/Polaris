@@ -1,6 +1,6 @@
 module.exports = {
   name: 'commandLogger',
-  priority: 100,
+  priority: 2,
   process: container => {
     const { msg, isPrivate, isCommand, logger } = container
     if (!isCommand || !logger) return Promise.resolve()

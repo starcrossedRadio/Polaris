@@ -1,6 +1,6 @@
 module.exports = {
   name: 'parseMessage',
-  priority: 10,
+  priority: 1,
   process: async container => {
       const { msg, client, commands } = container;
 

@@ -1,55 +1,42 @@
 const Command = require("../../src/structures/Command");
 
-module.exports = class Avatar extends Command {
+module.exports = class Eval extends Command {
   constructor(...args) {
     super(...args, {
-      name: "eval",
-      aliases: ["ev"],
-      options: { localeKey: "commands", adminOnly: true },
-    })
+      name: 'eval',
+      group: 'owner',
+      cooldown: 0,
+      options: { guildOnly: false, adminOnly: true },
+      usage: [
+        { name: 'eval', displayName: 'eval', type: 'string', optional: false, last: true }
+      ]
+    });
   }
-  async handle({ msg, rawArgs, client }, responder) {
-    let codeEval = rawArgs.join(' ')
+
+  async handle({ args, client, msg }, responder) {
+    let suffix, evaled;
+
+    const cleanCodeBlock = (string) => {
+      return string.replace(/^```.* ?/, '').replace(/```$/, '');
+    };
+
     try {
-      const beforeRunning = Date.now()
-      let result = eval(codeEval)  //eslint-disable-line
-
-      if (result instanceof Promise) {
-        await result
-      }
-
-      if (typeof result !== 'string') result = require('util').inspect(result)
-      const end = (Date.now() - beforeRunning)
-      msg.channel.createMessage({
-        embed: {
-          title: 'Sucesso!', // Title of the embed
-          description: `\`\`\`${result.slice(0, 2000)}\`\`\``,
-          author: { // Author property
-            name: msg.author.username,
-            icon_url: msg.author.avatarURL
-          },
-          color: 0x0000ff, // Color, either in hex (show), or a base-10 integer
-          fields: [ // Array of field objects
-            {
-              name: 'Tempo de execução', // Field title
-              value: `${(end / 60).toFixed(5)}s`, // Field
-              inline: true // Whether you want multiple fields in same line
-            },
-          ],
-        }
-      });
-    } catch (e) {
-      msg.channel.createMessage({
-        embed: {
-          title: 'Erro!', // Title of the embed
-          description: `\`\`\`${e.stack}\`\`\``,
-          author: { // Author property
-            name: msg.author.username,
-            icon_url: msg.author.avatarURL
-          },
-          color: 0x008000, // Color, either in hex (show), or a base-10 integer
-        }
-      });
+      suffix = cleanCodeBlock(args.eval);
+      evaled = eval(suffix);
+    } catch (err) {
+      return responder.send(
+        '__**Input:**__\n```js\n' + evaled + '```\n' +
+        '__**Error:**__\n```diff\n- ' + err + '```'
+      );
     }
+
+    if (typeof evaled === 'object') {
+      evaled = JSON.stringify(evaled);
+    }
+
+    return responder.send(
+      '__**Input:**__\n```js\n' + suffix + '```\n' +
+      '__**Result:**__\n```' + evaled + '```'
+    );
   }
 }

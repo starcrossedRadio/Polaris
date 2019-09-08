@@ -12,7 +12,7 @@ class Client extends Eris.Client {
     this.suppressWarnings = options.suppressWarnings
     this.noDefaults = options.noDefaults
     this.admins = Array.isArray(options.admins) ? options.admins : []
-    this.Eris = Eris
+    this.embed = Eris.Embed
     this._resolvers = options.resolvers
 
     this.plugins = new Collection()
