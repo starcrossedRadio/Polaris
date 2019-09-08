@@ -10,8 +10,6 @@ module.exports = class Avatar extends Command {
   }
   async handle({ msg, rawArgs, client }, responder) {
     let codeEval = rawArgs.join(' ')
-    if (/token/gm.test(codeEval)) return responder.error('Vai tentar pegar o token da sua mãe')
-    const m = await msg.channel.createMessage('Executando...')
     try {
       const beforeRunning = Date.now()
       let result = eval(codeEval)  //eslint-disable-line
@@ -21,7 +19,6 @@ module.exports = class Avatar extends Command {
       }
 
       if (typeof result !== 'string') result = require('util').inspect(result)
-      result = result.replace(/token:([a-zA-Z0-9])/gm, "")
       const end = (Date.now() - beforeRunning)
       msg.channel.createMessage({
         embed: {
