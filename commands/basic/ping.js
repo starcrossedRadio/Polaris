@@ -9,6 +9,6 @@ module.exports = class Avatar extends Command {
         })
     }
     async handle({ msg, args, store, client }, responder) {
-        return responder.send(client.ping)
+        return responder.reply(`${msg.channel.guild.shard.latency} ms`)
     }
 }

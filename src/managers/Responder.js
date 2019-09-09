@@ -14,7 +14,7 @@ class Responder {
 
     this.responseMethods = {
       send: (msg, res) => res,
-      reply: (msg, res) => `**${msg.author.username}**, ${res}`,
+      reply: (msg, res) => `${msg.author.mention}, ${res}`,
       success: (msg, res) => `${emojis['white_check_mark']}  |  **${msg.author.username}**, ${res}`,
       error: (msg, res) => `${emojis['negative_squared_cross_mark']}  |  **${msg.author.username}**, ` + (res || '{{%ERROR}}')
     }
