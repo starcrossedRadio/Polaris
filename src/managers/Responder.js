@@ -4,14 +4,14 @@ try {
 } catch (err) {
   Promise = global.Promise
 }
-
+const ReactionHandler = require('eris-reactions');
 const { padEnd, emojis } = require('../util')
 
 class Responder {
-  constructor (command) {
+  constructor(command) {
     this.command = command
     this.i18n = command.i18n
-
+    this.react = ReactionHandler
     this.responseMethods = {
       send: (msg, res) => res,
       reply: (msg, res) => `${msg.author.mention}, ${res}`,
@@ -30,7 +30,7 @@ class Responder {
     }
   }
 
-  create ({ msg: message, settings = {} }, data) {
+  create({ msg: message, settings = {} }, data) {
     let responder = Object.assign((...args) => responder.send(...args), {
       command: this.command,
       message: message,
@@ -41,7 +41,7 @@ class Responder {
       formatMethods: this.formatMethods
     })
 
-    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection']
+    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection','messageCollectionReaction']
     copy.forEach(prop => { responder[prop] = this[prop].bind(responder) })
 
     for (let method in this.responseMethods) {
@@ -51,14 +51,14 @@ class Responder {
     return responder
   }
 
-  t (content = '', locale, tags = {}) {
+  t(content = '', locale, tags = {}) {
     const cmd = this.command
     const file = cmd.name ? cmd.name.split(':')[0] : (cmd.triggers ? cmd.triggers[0] : 'common')
     const res = cmd.i18n.parse(content, cmd.localeKey || file, this.settings.lang || locale, tags)
     return res.replace(/:(\S+):/gi, (matched, name) => emojis[name] || emojis['information_source'])
   }
 
-  _send (method, response = '', options = {}) {
+  _send(method, response = '', options = {}) {
     const message = this.message
     const formats = this._formats || []
 
@@ -74,7 +74,7 @@ class Responder {
     }
 
     const promise = (options.DM ? this.command._client.getDMChannel(message.author.id) : Promise.resolve(message.channel))
-    .then(channel => this.command.send(channel, response, options))
+      .then(channel => this.command.send(channel, response, options))
 
     delete this._formats
     this._options = {}
@@ -82,36 +82,49 @@ class Responder {
     return promise
   }
 
-  clean () {
+  clean() {
     delete this._formats
     return this
   }
 
-  typing () {
+  typing() {
     return this.message.channel.sendTyping()
   }
 
-  format (formats) {
+  format(formats) {
     this._formats = (formats instanceof Array) ? formats : [formats]
     return this
   }
 
-  file (name, file) {
+  file(name, file) {
     this._options.file = { name, file }
     return this
   }
 
-  embed (embed) {
+  embed(embed) {
     this._options.embed = embed
     return this
   }
 
-  async dialog (dialogs = [], options = {}) {
+  async messageCollectionReaction(message, filter, permanent, options) {
+    const reactionListener = new ReactionHandler.continuousReactionStream(
+      message,
+      filter ? filter : (userID) => userID === message.author.id,
+      permanent ? permanent : false,
+      options ? options : { maxMatches: 100, time: 900000 }
+    );
+
+    reactionListener.on('reacted', (event) => {
+      return event;
+    });
+  }
+
+  async dialog(dialogs = [], options = {}) {
     const bridge = this.command._client.plugins.get('middleware')
     if (!bridge) {
       throw new Error('Bridge plugin not found')
     }
-  
+
     const { message, data } = this
     const { tries = 10, time = 60, matches = 10, filter, cancel = 'cancel' } = options
 
@@ -179,7 +192,8 @@ class Responder {
     return Promise.resolve(args)
   }
 
-  async selection (selections = [], options = {}) {
+
+  async selection(selections = [], options = {}) {
     if (!Array.isArray(selections)) return [selections, 0]
     if (!selections.length) return []
     if (selections.length === 1) return [selections[0], 0]

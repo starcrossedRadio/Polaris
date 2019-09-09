@@ -9,15 +9,7 @@ module.exports = class Avatar extends Command {
     })
   }
   async handle({ msg, rawArgs, client }, responder) {
-    const reactionListener = new client.reaction.continuousReactionStream(
-      msg,
-      (userID) => userID === msg.author.id,
-      false,
-      { maxMatches: 100, time: 900000 }
-    );
-
-    reactionListener.on('reacted', (event) => {
-      msg.channel.createMessage('You reacted with: ' + event.emoji.name);
-    });
+    let msgs = responder.send('eae')
+    console.log(responder.messageCollectionReaction('620426866955649034'))
   }
 }
