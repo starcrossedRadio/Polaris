@@ -1,6 +1,7 @@
 const path = require('path')
 const Eris = require('eris')
 require("eris-additions")(Eris)
+const ReactionHandler = require('eris-reactions');
 const { Commander, Router, Sched, Interpreter, Logger } = require('./core')
 const { Collection } = require('./util')
 
@@ -13,6 +14,7 @@ class Client extends Eris.Client {
     this.noDefaults = options.noDefaults
     this.admins = Array.isArray(options.admins) ? options.admins : []
     this.embed = Eris.Embed
+    this.reaction = ReactionHandler
     this._resolvers = options.resolvers
 
     this.plugins = new Collection()

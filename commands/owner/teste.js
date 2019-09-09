@@ -9,14 +9,15 @@ module.exports = class Avatar extends Command {
     })
   }
   async handle({ msg, rawArgs, client }, responder) {
-    let embed = new client.embed
+    const reactionListener = new client.reaction.continuousReactionStream(
+      msg,
+      (userID) => userID === msg.author.id,
+      false,
+      { maxMatches: 100, time: 900000 }
+    );
 
-    responder.embed(
-      embed
-        .author(msg.author.username, msg.author.dynamicAvatarURL(null, 512))
-        .title('teste')
-        .timestamp()
-        .color(0x00ff00)
-    ).send()
+    reactionListener.on('reacted', (event) => {
+      msg.channel.createMessage('You reacted with: ' + event.emoji.name);
+    });
   }
 }
