@@ -1,0 +1,12 @@
+{
+  "whois": {
+    "title": "Informações de usuário",
+    "gamming": "Jogando",
+    "entry_server": "Entrou no server há: ",
+    "create_account": "Conta criada há: ",
+    "roles": "cargos[{{length}}]"
+  },
+  "download_avatar": "[Baixe aqui!]({{url}})",
+  "set_lang": "<@{{user}}> Ahh, grazadeus. É tão bom falar a língua natal ~ :flag_br:",
+  "language_list": "<@{{user}}> Estes são os locais disponíveis até o momento! ```{{locales}}``` Para ajudar na minha tradução e internacionalização, acesse minha página no GitHub!"
+}

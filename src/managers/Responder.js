@@ -4,14 +4,12 @@ try {
 } catch (err) {
   Promise = global.Promise
 }
-const ReactionHandler = require('eris-reactions');
 const { padEnd, emojis } = require('../util')
 
 class Responder {
   constructor(command) {
     this.command = command
     this.i18n = command.i18n
-    this.react = ReactionHandler
     this.responseMethods = {
       send: (msg, res) => res,
       reply: (msg, res) => `${msg.author.mention}, ${res}`,
@@ -41,7 +39,7 @@ class Responder {
       formatMethods: this.formatMethods
     })
 
-    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection','messageCollectionReaction']
+    const copy = ['_send', 't', 'clean', 'typing', 'format', 'file', 'embed', 'dialog', 'selection']
     copy.forEach(prop => { responder[prop] = this[prop].bind(responder) })
 
     for (let method in this.responseMethods) {
@@ -51,7 +49,7 @@ class Responder {
     return responder
   }
 
-  t(content = '', locale, tags = {}) {
+  t(content = '', tags = {}, locale) {
     const cmd = this.command
     const file = cmd.name ? cmd.name.split(':')[0] : (cmd.triggers ? cmd.triggers[0] : 'common')
     const res = cmd.i18n.parse(content, cmd.localeKey || file, this.settings.lang || locale, tags)
@@ -65,7 +63,7 @@ class Responder {
     Object.assign(options, this._options || {})
 
     if (response instanceof Array) response = response.join('\n')
-    response = this.command.t(response, this.settings.lang || 'en', options)
+    response = this.command.t(response, options, this.settings.lang || 'en')
     response = this.responseMethods[method || 'send'](message, response)
 
     for (let format of formats) {
@@ -104,19 +102,6 @@ class Responder {
   embed(embed) {
     this._options.embed = embed
     return this
-  }
-
-  async messageCollectionReaction(message, filter, permanent, options) {
-    const reactionListener = new ReactionHandler.continuousReactionStream(
-      message,
-      filter ? filter : (userID) => userID === message.author.id,
-      permanent ? permanent : false,
-      options ? options : { maxMatches: 100, time: 900000 }
-    );
-
-    reactionListener.on('reacted', (event) => {
-      return event;
-    });
   }
 
   async dialog(dialogs = [], options = {}) {

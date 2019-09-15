@@ -18,7 +18,7 @@ module.exports = class Avatar extends Command {
 
         responder.embed({
             title: `${user.username}'s Avatar!`,
-            description: `**[${responder.t("{{download_avatar}}", store.settings.locale, { url: user.dynamicAvatarURL(null, 512) })}](${user.dynamicAvatarURL(null, 512)})**`,
+            description: `**[${responder.t("{{download_avatar}}", { url: user.dynamicAvatarURL(null, 512) })}](${user.dynamicAvatarURL(null, 512)})**`,
             color: 11220318,
             image: { url: user.dynamicAvatarURL(null, 512) },
             footer: { icon_url: msg.author.avatarURL, text: msg.author.username + `#` + msg.author.discriminator }

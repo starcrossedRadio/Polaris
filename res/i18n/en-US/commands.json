@@ -1,7 +1,17 @@
 {
+    "whois":{
+        "title": "User Information",
+        "gamming":"Game Playing",
+        "entry_server":"Joined Server At",
+        "day_entry":"{{days}} dias",
+        "create_account":"Created Discord Account",
+        "roles":"Roles [{{length}}]"
+    },
     "title_avatar": "{{user}}'s Avatar",
     "download_avatar": "[Download here!]({{url}})",
     "set_prefix": "Easy and sweet like eat a candy! Your prefix is `{{prefix}}` now, chu! < 3",
     "error_prefix": "Something goes whrong when I tried to change your prefix, darling... Try again later!",
-    "same_prefix": "that prefix was already set, darling. :("
+    "same_prefix": "that prefix was already set, darling. :(",
+    "language_list": "<@{{user}}> These are the locales available at the moment! ```{{locales}}```",
+    "set_lang": "<@{{user}}> Oh, english... I love that! ~  :flag_us: "
 }

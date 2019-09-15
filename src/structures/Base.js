@@ -23,7 +23,7 @@ class Base {
     return true;
   }
 
-  t (content = '', lang = 'en', tags = {}) {
+  t (content = '', tags = {}, lang = 'en') {
     if (!this.i18n) return content
     const file = this.name ? this.name.split(':')[0] : (this.labels ? this.labels[0] : 'common')
     return this.i18n.parse(content, this.localeKey || file || null, lang, tags)

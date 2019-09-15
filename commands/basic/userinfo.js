@@ -5,10 +5,9 @@ class UserInfo extends Command {
   constructor(...args) {
     super(...args, {
       name: 'userinfo',
-      group: 'basic',
       aliases: ['user'],
       cooldown: 5,
-      options: { guildOnly: true },
+      options: { guildOnly: true, localeKey: 'commands' },
       usage: [
         { name: 'member', displayName: 'member', type: 'string', optional: true, last: true }
       ]
@@ -29,20 +28,26 @@ class UserInfo extends Command {
     const embed = new client.embed
     return responder.embed(
       embed
-        .title('User Information')
+        .title(responder.t('{{whois.title}}'))
         .description(`${user.username}#${user.discriminator}`)
         .color(0x00ff00)
         .thumbnail(user.user.dynamicAvatarURL())
         .field('Nickname', `${user.nick !== null ? user.nick : 'None'}`, true)
         .field('ID', `${user.id}`, true)
         .field('Status', `${user.status}`, true)
-        .field('Game Playing', `${user.game !== null ? user.game.name : 'None'}`, true)
-        .field('Joined Server At', `${moment(user.joinedAt).format('MMMM Do YYYY')} at ${moment(user.joinedAt).format('h:mm a')}`, true)
-        .field('Created Discord Account', `${moment(user.createdAt).format('MMMM Do YYYY')} at ${moment(user.createdAt).format('h:mm a')}`, true)
-        .field(`Roles [${user.roles.length}]`, `${user.roles.map(roleid => msg.channel.guild.roles.get(roleid).name).join(', ') || 'None'}`, false)
+        .field(responder.t('{{whois.gamming}}'), `${user.game !== null ? user.game.name : 'None'}`, true)
+        .field(responder.t('{{whois.entry_server}}'), responder.t('{{whois.day_entry}}', {
+          days: moment().diff(user.joinedAt, "days")
+        }), true)
+        .field(responder.t('{{whois.create_account}}'), responder.t('{{whois.day_entry}}', {
+          days: moment().diff(user.createdAt, "days")
+        }), true)
+        .field(responder.t('{{whois.roles}}', { length: user.roles.length }),
+          `${user.roles.map(roleid => `<@&${msg.channel.guild.roles.get(roleid).id}>`).join(', ') || 'None'}`, false)
         .timestamp()
-    ).send().catch(this.logger.error);
+    ).send().catch(this.logger.error)
   }
 }
+
 
 module.exports = UserInfo;
