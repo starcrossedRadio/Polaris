@@ -1,5 +1,4 @@
-const Command = require("../../src/structures/Command");
-
+const Command = include("src/structures/Command");
 module.exports = class Eval extends Command {
   constructor(...args) {
     super(...args, {

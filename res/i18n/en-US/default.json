@@ -1,6 +1,6 @@
 {
     "errors": {
-      "INSUFFICIENT_ARGS": "insufficient arguments supplied - {{requiredArgs}} expected, but only {{argsCount}} found.",
+      "INSUFFICIENT_ARGS": "insufficient arguments supplied, {{requiredArgs}} expected, but only {{argsCount}} found.",
       "NO_END_QUOTE": "you have a missing end quote.",
       "ON_COOLDOWN": "please cool down! ({{time}} seconds left)",
       "NO_PERMS": "you need the permissions {{perms}} to run this command!",

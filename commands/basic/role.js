@@ -1,4 +1,4 @@
-const Command = require("../../src/structures/Command");
+const Command = include("src/structures/Command");
 
 module.exports = class Avatar extends Command {
     constructor(...args) {

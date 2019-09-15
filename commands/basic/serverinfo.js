@@ -1,4 +1,4 @@
-const Command = require("../../src/structures/Command");
+const Command = include("src/structures/Command");
 const moment = require('moment');
 
 class ServerInfo extends Command {
