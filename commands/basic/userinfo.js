@@ -6,46 +6,51 @@ class UserInfo extends Command {
     super(...args, {
       name: 'userinfo',
       aliases: ['user'],
-      cooldown: 5,
+      group: 'basic',
+      usage: [{
+        name: 'member',
+        displayName: 'id/menção/username',
+        type: 'member',
+        optional: true
+      }],
       options: { guildOnly: true, localeKey: 'commands' },
-      usage: [
-        { name: 'member', displayName: 'member', type: 'string', optional: true, last: true }
-      ]
+      cooldown: 5
     });
   }
 
   handle({ args, client, msg }, responder) {
-    const member = args.member;
+    let user = args.member ? args.member[0].id : msg.member.user.id
+    user = msg.channel.guild.members.get(user)
+    const permission = Object.entries(user.permission.json).filter(r => r[1] === true)
+    let clientStatus = user.clientStatus ? Object.entries(user.clientStatus).filter(s => s[1] !== "offline") : null
 
-    let user;
-    if (msg.mentions.length > 0) {
-      user = msg.channel.guild.members.get(msg.mentions[0].id);
-    } else if (member.length >= 17) {
-      user = msg.channel.guild.members.get(member);
-    } else {
-      user = msg.channel.guild.members.get(msg.member.id);
-    }
     const embed = new client.embed
-    return responder.embed(
-      embed
-        .title(responder.t('{{whois.title}}'))
-        .description(`${user.username}#${user.discriminator}`)
-        .color(0x00ff00)
-        .thumbnail(user.user.dynamicAvatarURL())
-        .field('Nickname', `${user.nick !== null ? user.nick : 'None'}`, true)
-        .field('ID', `${user.id}`, true)
-        .field('Status', `${user.status}`, true)
-        .field(responder.t('{{whois.gamming}}'), `${user.game !== null ? user.game.name : 'None'}`, true)
-        .field(responder.t('{{whois.entry_server}}'), responder.t('{{whois.day_entry}}', {
-          days: moment().diff(user.joinedAt, "days")
-        }), true)
-        .field(responder.t('{{whois.create_account}}'), responder.t('{{whois.day_entry}}', {
-          days: moment().diff(user.createdAt, "days")
-        }), true)
-        .field(responder.t('{{whois.roles}}', { length: user.roles.length }),
-          `${user.roles.map(roleid => `<@&${msg.channel.guild.roles.get(roleid).id}>`).join(', ') || 'None'}`, false)
-        .timestamp()
-    ).send().catch(this.logger.error)
+    embed
+      .title(responder.t('{{whois.title}}'))
+      .description(`<@${user.id}>`)
+      .color(user.color)
+      .thumbnail(user.user.dynamicAvatarURL())
+      .field('ID', `${user.id}`, true)
+      .field('Status', responder.t(`{{whois.status.${user.status}}}`), true)
+      .field(responder.t('{{whois.clientStatus}}'), `\`\`\`Markdown\n# ${clientStatus ? clientStatus.map(r => r[0]).join(" ") : "None"}\`\`\``, true)
+      .field(responder.t('{{whois.gamming}}'), `\`\`\`Markdown\n# ${user.game ? user.game.name : 'none'}\`\`\``, true)
+      .field(responder.t('{{whois.entry_server}}'), responder.t('{{whois.day_entry}}', {
+        days: moment().diff(user.joinedAt, "days")
+      }), true)
+      .field(responder.t('{{whois.create_account}}'), responder.t('{{whois.day_entry}}', {
+        days: moment().diff(user.createdAt, "days")
+      }), true)
+      .field(responder.t('{{whois.roles}}', { length: user.roles.length }),
+        user.roles.map(roleid => `<@&${msg.channel.guild.roles.get(roleid).id}>`).join(', ') || 'None', true)
+      .field('Bot', user.bot ? "``true``" : "``false``", true)
+      .timestamp()
+
+    if (user.nick) embed.field(responder.t('{{whois.nickname}}'), user.nick, true)
+
+    embed.field(responder.t('{{whois.permissions}}', { length: permission.length }),
+      `\`\`\`CSS\n${permission.map(r => r[0]).join(" | ")}\`\`\``, true)
+
+    return responder.embed(embed).send().catch(this.logger.error)
   }
 }
 

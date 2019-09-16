@@ -54,7 +54,7 @@ class Resolver extends Collection {
         message: 'INSUFFICIENT_ARGS',
         requiredArgs: `**${requiredArgs}**`,
         argsCount: `**${argsCount}**.`,
-        usage: this.getUsage(this.usage, data)
+        usage: this.getUsage(this.usage, data),
       })
     }
 
@@ -109,10 +109,11 @@ class Resolver extends Collection {
         let error
         let resp = arg
         if (err.message) {
-          for (const key in err) {
+          error = err.message
+          /*for (const key in err) {
             if (key === 'message') continue
             error = err[key]
-          }
+          }*/
         } else {
           error = err
         }

@@ -17,7 +17,7 @@ module.exports = {
     if (choices.length && !choices.includes(content)) {
       return Promise.reject({
         message: 'string.ONE_OF',
-        choices: choices.map(c => '`' + c + '`').join(', ')
+        choices
       })
     }
     if (categories.length) {
@@ -26,7 +26,7 @@ module.exports = {
       }
       return Promise.reject({
         message: 'string.ONE_OF',
-        choices: Object.keys(categories).map(c => '`' + c + '`').join(', ')
+        choices: Object.keys(categories)
       })
     }
     return Promise.resolve(content)

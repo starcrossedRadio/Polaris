@@ -26,7 +26,7 @@
       "NOT_STRING": "{{arg}} deve ser uma string",
       "MAX": "O comprimento do {{arg}} não pode ser superior a {{max}}",
       "MIN": "O comprimento do {{arg}} não pode ser menor que {{min}}",
-      "ONE_OF": "{{arg}} deve ser um dos seguintes: {{choices}}"
+      "ONE_OF": "{{arg}} deve ser um dos seguintes: [`{{choices}}`]"
     },
     "list": {
       "MAX": "O comprimento do {{arg}} não pode conter mais do que {{max}} itens",

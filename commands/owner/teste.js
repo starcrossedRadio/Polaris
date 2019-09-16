@@ -9,7 +9,6 @@ module.exports = class Avatar extends Command {
     })
   }
   async handle({ msg, rawArgs, client }, responder) {
-    let msgs = responder.send('eae')
-    console.log(responder.messageCollectionReaction('620426866955649034'))
+    
   }
 }

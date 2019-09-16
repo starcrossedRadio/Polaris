@@ -2,11 +2,43 @@
   "whois": {
     "title": "Informações de usuário",
     "gamming": "Jogando",
+    "nickname": "Apelido",
     "entry_server": "Entrou no server há: ",
+    "day_entry": "``{{days}} dias``",
     "create_account": "Conta criada há: ",
-    "roles": "cargos[{{length}}]"
+    "roles": "cargos [{{length}}]",
+    "permissions": "Permissões no servidor [{{length}}]",
+    "clientStatus": "Usuário logado no:",
+    "status": {
+      "online": ":online: ativo",
+      "idle": ":idle: ausente",
+      "dnd": ":dnd: não incomodar",
+      "offline": ":offline: desconectado/invisivel"
+    }
+  },
+  "server": {
+    "id": "🔰 ID do servidor",
+    "owner": "Chefe do Servidor",
+    "locale": "⚽ Região",
+    "ownerID": "ID do Dono",
+    "days": "**```{{days}} dias```**",
+    "createDate": ":date: Servidor criado em: ",
+    "createTime": "⏰ Servidor criado há",
+    "channelVoice": "🎤 Canais de Voz:",
+    "channelVoiceSize":"```{{channels}} canal(is) de voz```",
+    "channelText": "📋 Canais de texto:",
+    "channelTextSize": "```{{channels}} canal(is) de texto```",
+    "botAddDate": "📥 Bot adicionado em",
+    "botAddTime": "📥 Bot adicionado há",
+    "members": "🎎 Total de Membros",
+    "membersSize": "```{{members}} membros no servidor```",
+    "roles": "📌 Total de Cargos:",
+    "rolesSize": "```{{roles}} cargos```",
+    "peoples": "🏣 Total de Pessoas:",
+    "peoplesSize": "```👥 {{peoples}} usuários```",
+    "bots": "👾 Total de Bots:"
   },
   "download_avatar": "[Baixe aqui!]({{url}})",
-  "set_lang": "<@{{user}}> Ahh, grazadeus. É tão bom falar a língua natal ~ :flag_br:",
+  "set_lang": "<@{{user}}> Oh, english... I love that! ~  :flag_us: ",
   "language_list": "<@{{user}}> Estes são os locais disponíveis até o momento! ```{{locales}}``` Para ajudar na minha tradução e internacionalização, acesse minha página no GitHub!"
 }

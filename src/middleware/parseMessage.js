@@ -16,7 +16,7 @@ module.exports = {
     container.isCommand = commands.has(container.trigger);
     container.rawArgs = rawArgs.slice(1).filter(v => v);
     container.store = store;
-    container.settings = { lang: language }
+    container.settings = { lang: language, prefix }
     return Promise.resolve(container);
   }
 }

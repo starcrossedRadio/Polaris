@@ -1,10 +1,13 @@
-const Module = require("../../src/structures/Module");
+const Module = include("src/structures/Module");
 
-module.exports = class Ready extends Module {
+module.exports = class Guild extends Module {
     constructor(...args) {
         super(...args, {
-            name: "guild:create",
-            events: { guildCreate: "newGuild", guildDelete: "delGuild" }
+            name: "guild",
+            events: {
+                guildCreate: "newGuild",
+                guildDelete: "delGuild"
+            }
         })
     }
     async init() {

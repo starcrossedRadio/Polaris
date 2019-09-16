@@ -3,25 +3,34 @@ const Command = include("src/structures/Command");
 module.exports = class Avatar extends Command {
     constructor(...args) {
         super(...args, {
-            name: "avatar",
-            aliases: ["pfp"],
-            options: { localeKey: "commands" },
-            usage: [{ name: 'userID', type: 'string', optional: true }]
+            name: 'avatar',
+            aliases: ['pfp'],
+            group: 'basic',
+            usage: [{
+                name: 'member',
+                displayName: 'id/menção/username',
+                type: 'member',
+                optional: true
+            }],
+            options: { guildOnly: true, localeKey: 'commands' },
+            cooldown: 5
         })
     }
-    async handle({ msg, args, store, client }, responder) {
+    async handle({ msg, args, client }, responder) {
 
-        let user;
+        let user = args.member ?
+            msg.channel.guild.members.get(args.member[0].id).user :
+            msg.channel.guild.members.get(msg.member.user.id).user;
 
-        if(msg.mentions.length) user = msg.mentions[0];
-        else user = client.users.get(args.userID) || msg.author;
+        const embed = new client.embed
+        embed
+            .title(`${user.username}'s Avatar!`)
+            .description(responder.t("{{download_avatar}}", { url: user.dynamicAvatarURL(null, 512) }))
+            .color(11220318)
+            .image(user.dynamicAvatarURL(null, 512))
+            .footer(`${msg.author.username}#${msg.author.discriminator}`, msg.author.avatarURL)
+            .timestamp()
 
-        responder.embed({
-            title: `${user.username}'s Avatar!`,
-            description: `**[${responder.t("{{download_avatar}}", { url: user.dynamicAvatarURL(null, 512) })}](${user.dynamicAvatarURL(null, 512)})**`,
-            color: 11220318,
-            image: { url: user.dynamicAvatarURL(null, 512) },
-            footer: { icon_url: msg.author.avatarURL, text: msg.author.username + `#` + msg.author.discriminator }
-        }).send()
+        responder.embed(embed).send()
     }
 }
