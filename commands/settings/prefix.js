@@ -11,10 +11,15 @@ module.exports = class Avatar extends Command {
     }
     async handle({ msg, args, store, client }, responder) {
 
-        if (args.prefix === store.settings.prefix) return responder.error(responder.t("{{same_prefix}}", store.settings.lang, { user: msg.author.mention }));
+        if (args.prefix === store.settings.prefix)
+            return responder.error(responder.t("{{same_prefix}}", {
+                user: msg.author.mention
+            }));
         store.update({ "settings.prefix": args.prefix });
         await store.save().then(() => {
-            return responder.send(responder.t("{{set_prefix}}", { prefix: args.prefix }));
+            return responder.send(responder.t("{{set_prefix}}", {
+                prefix: args.prefix
+            }));
         })
     }
 }

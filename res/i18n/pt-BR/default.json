@@ -1,6 +1,6 @@
 {
   "errors": {
-    "INSUFFICIENT_ARGS": "argumentos insuficientes, {{requiredArgs}} argumentos esperados, mas só {{argsCount}} encontrado.",
+    "INSUFFICIENT_ARGS": "argumentos insuficientes, {{requiredArgs}} argumentos esperados, mas só {{argsCount}} encontrado.  \nuso: ``{{usage}}``",
     "NO_END_QUOTE": "you have a missing end quote.",
     "ON_COOLDOWN": "por favor, acalme-se! ({{time}} segundos restantes)",
     "NO_PERMS": "você precisa das permissões {{perms}} para executar este comando!",

@@ -20,10 +20,9 @@ const Navi = new Client({
 
 
 const resolve = (dir) => path.join(dir);
-
 Navi.register("commands", resolve("/commands"), { groupedCommands: true })
 .createPlugin("db", Database, {
-  username: process.env.USER,
+  username: process.env.USERNAMES,
   password: process.env.PASSWORD,
   database: process.env.DBNAME,
   dialect: process.env.DIALECT,
