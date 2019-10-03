@@ -1,7 +1,6 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Guild = sequelize.define("guild", {
-    
     /** CORE DATA
      * @id -> ID of the guild
      * @name -> Name of the guild
@@ -19,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     settings: { type: DataTypes.JSONB, defaultValue: { prefix: "-", locale: 'en-US' } },
     permissions: { type: DataTypes.JSONB, defaultValue: {} },
-    modules: { type: DataTypes.JSONB, defaultValue: {} }
+    levelSystem: { type: DataTypes.JSONB, defaultValue: { roles: { 0: null, 10: null, 20: null, 30: null, 40: null, 50: null, 60: null, 70: null, 80: null, 90: null, 100: null }, members: [], enabled: true } },
+    inframodules: { type: DataTypes.JSONB, defaultValue: {} },
   })
 
   return Guild;
