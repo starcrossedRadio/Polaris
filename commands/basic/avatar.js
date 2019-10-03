@@ -8,7 +8,7 @@ module.exports = class Avatar extends Command {
             group: 'basic',
             usage: [{
                 name: 'member',
-                displayName: 'id/menção/username',
+                displayName: 'id/mention/username',
                 type: 'member',
                 optional: true
             }],
