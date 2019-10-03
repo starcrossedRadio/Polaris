@@ -51,13 +51,12 @@ class Mind {
         this.models[model.name] = model;
             });
                 this.mind1.sync();
-                return resolve(this)
+                return resolve(this);
             });
     }
   async loadCache() {
         this.models.users = withCache(this.mind1.import(__dirname + '/models/User.js'));
         this.models.guilds = withCache(this.mind1.import(__dirname + '/models/Guild.js'));
-        this.models.members = withCache(this.mind1.import(__dirname + '/models/Member.js'));
     }
 }
 
