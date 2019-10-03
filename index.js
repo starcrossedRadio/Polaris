@@ -6,6 +6,7 @@ global.base_dir = __dirname;
 global.abs_path = function(path) {
   return base_dir + path;
 }
+
 global.include = function(file) {
   return require(abs_path('/' + file));
 }
@@ -15,9 +16,8 @@ require("dotenv").config();
 const Navi = new Client({
   token: process.env.TOKEN,
   modules: '/modules',
-  admins: ['268351613771448320']
+  admins: ['268351613771448320', '616059349957345280']
 });
-
 
 const resolve = (dir) => path.join(dir);
 Navi.register("commands", resolve("/commands"), { groupedCommands: true })
@@ -25,9 +25,7 @@ Navi.register("commands", resolve("/commands"), { groupedCommands: true })
   username: process.env.USERNAMES,
   password: process.env.PASSWORD,
   database: process.env.DBNAME,
-  dialect: process.env.DIALECT,
-  host: process.env.HOST,
-  port: process.env.PORT,
+  dialect: "postgres",
   logging: false
   
 })
