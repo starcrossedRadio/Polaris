@@ -12,7 +12,7 @@ module.exports = class Eval extends Command {
     });
   }
 
-  async handle({ args, client, msg }, responder) {
+  async handle({ args, client, msg, store }, responder) {
     let suffix, evaled;
 
     const cleanCodeBlock = (string) => {
