@@ -24,26 +24,41 @@ module.exports = class Guild extends Module {
         
         const members     = store.levelSystem.members;
         const target      = members.find(m => m.id === message.author.id);
-        const guildMember = message.channel.guild.members.get(message.author.id);
- 
-        this.addExp(target, store, guildMember);
+        const guild       = message.channel.guild;
+        this.addExp(guild, target, store, members);
 
         if (!target) {
             members.push({ "id": message.author.id, "experience": 0, "level": 0 });
-            await store.update({ "levelSystem.members": members });
-            return store.save();
+            return await store.cache().update({ "levelSystem.members": members });
         }
     }
-    async addExp(target, store, guildMember) {
+    async addExp(guild, target, store, members) {
+        const guildMember = guild.members.get(target.id);
+
         if(moment().diff(guildMember.cooldown || 0) < 0) return false;
-        const Generated = randomize(1, 25);
-        const newEXP = target.experience + Generated;
 
-       // guildMember.cooldown = moment().add(60, 180, "seconds");
+        const Generated   = randomize(15, 25);
+        const newEXP      = target.experience + Generated;
+        const memberIndex = members.findIndex(member => member.id === target.id);
+
+        members[memberIndex].experience = newEXP;
         
+        store.cache().update({ "levelSystem.members": members });
+        store.cache().save().then(() => {
+            guildMember.cooldown = moment().add(randomize(60, 180), 'seconds');
+        })
 
-    }
+        console.log(members[memberIndex].experience)
+    }   
     async getNeeded(level) {
         return 5 * (Math.pow(level, 2)) + 60 * level + 100;
+    }
+    async getLevel(exp) {
+        let level = 0;
+        while (exp >= this.getNeeded(level)) {
+            exp -= this.getNeeded(level);
+            level++;
+        }
+        return level;
     }
 }
