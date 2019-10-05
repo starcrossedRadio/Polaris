@@ -1,7 +1,11 @@
+// Importing source modules
 const Module = include("src/structures/Module");
-const moment = require("moment");
 const { randomize } = include("src/util/Utils.js");
+
+// Importing NPM modules
 const chalk = require("chalk");
+const moment = require("moment");
+
 
 module.exports = class Guild extends Module {
     constructor(...args) {
@@ -46,7 +50,6 @@ module.exports = class Guild extends Module {
          * @newEXP -> Member previous exp count + @Generated ;
          * @members -> @Array instance of @PolarisStore server's context;
          * @memberIndex -> Member's position at @PolarisStore server's specific @members
-         * 
          */
         
         const guildMember = guild.members.get(target.id);
@@ -58,15 +61,24 @@ module.exports = class Guild extends Module {
         const memberIndex = members.findIndex(member => member.id === target.id);
 
         members[memberIndex].experience = newEXP;
-
+        this.calculateLevel(members[memberIndex].experience);
         store.cache().update({ "levelSystem.members": members });
         store.cache().save().then((saved) => {
             const time = randomize(60, 180)
-            guildMember.cooldown = moment().add(time, 'seconds');
-            this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp!"} ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
+         //   guildMember.cooldown = moment().add(time, 'seconds');
+            
+            this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}" // ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
         })
     }
     async getNeeded(level) {
         return 5 * (Math.pow(level, 2)) + 60 * level + 100;
+    }
+    async calculateLevel(experience) {
+        let level = 0;
+        while(experience >= await this.getNeeded(level)) {
+            experience -= await this.getNeeded(level);
+            level++;
+        }
+        return level;
     }
 }
