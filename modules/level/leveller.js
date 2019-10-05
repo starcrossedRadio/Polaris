@@ -34,14 +34,21 @@ module.exports = class Guild extends Module {
         const members     = store.levelSystem.members;
         const target      = members.find(m => m.id === message.author.id);
         const guild       = message.channel.guild;
-        this.addExp(guild, target, store, members);
 
         if (!target) {
             members.push({ "id": message.author.id, "experience": 0, "level": 0 });
             return await store.cache().update({ "levelSystem.members": members });
         }
+
+        const memberIndex = members.findIndex(member => member.id === target.id);
+        const oldLevel    = target.experience;
+
+        this.addExp(memberIndex, guild, target, store, members);
+
+        const newLevel    = this.calculateLevel(members[memberIndex].experience);
+
     }
-    async addExp(guild, target, store, members) {
+    async addExp(memberIndex, guild, target, store, members) {
 
         /**
          * @guildMember -> The member in the API context;
@@ -58,14 +65,13 @@ module.exports = class Guild extends Module {
 
         const Generated   = randomize(15, 25);
         const newEXP      = target.experience + Generated;
-        const memberIndex = members.findIndex(member => member.id === target.id);
 
         members[memberIndex].experience = newEXP;
-        this.calculateLevel(members[memberIndex].experience);
+        
         store.cache().update({ "levelSystem.members": members });
         store.cache().save().then((saved) => {
             const time = randomize(60, 180)
-            guildMember.cooldown = moment().add(time, 'seconds');   
+          //  guildMember.cooldown = moment().add(time, 'seconds');   
             this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}" // ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
         })
     }
@@ -79,5 +85,8 @@ module.exports = class Guild extends Module {
             level++;
         }
         return level;
+    }
+    async levelUp(store, newLevel, guildMember) {
+        
     }
 }
