@@ -65,8 +65,7 @@ module.exports = class Guild extends Module {
         store.cache().update({ "levelSystem.members": members });
         store.cache().save().then((saved) => {
             const time = randomize(60, 180)
-         //   guildMember.cooldown = moment().add(time, 'seconds');
-            
+            guildMember.cooldown = moment().add(time, 'seconds');   
             this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}" // ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
         })
     }
