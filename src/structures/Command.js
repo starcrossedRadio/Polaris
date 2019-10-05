@@ -1,5 +1,5 @@
 const path = require('path')
-
+const moment = require("moment");
 const { Collection } = require('../util')
 const { Responder, Resolver } = require('../managers')
 const Base = require('./Base')
@@ -98,6 +98,14 @@ class Command extends Base {
     }, err => responder.error(`{{%errors.${err.message}}}`, err)).catch(this.logger.error)
   }
   check ({ msg, isPrivate, admins, client }, responder, subcmd) {
+    if(moment().diff(msg.author.cooldown || 0) < 0) {
+      responder.error('{{%errors.ON_COOLDOWN}}', {
+        delay: 0,
+        deleteDelay: 5000,
+        time: `**${moment(moment(msg.author.cooldown).diff(new Date())).format('s')}**`
+      })
+      return false
+    }
     const isAdmin = admins.includes(msg.author.id)
     const { guildOnly, permissions = [], botPerms = [] } = subcmd ? subcmd.options : this.options
     const adminOnly = (subcmd && subcmd.options.adminOnly) || this.options.adminOnly
@@ -125,27 +133,13 @@ class Command extends Base {
       return false
     }
 
-    if (isAdmin) return true
-    const awaitID = msg.author.id
-    if (this.cooldown > 0) {
-      const now = Date.now() / 1000 | 0
-      if (!this.timers.has(awaitID)) {
-        this.timers.set(awaitID, now)
-      } else {
-        const diff = now - this.timers.get(awaitID)
-        if (diff < this.cooldown) {
-          responder.error('{{%errors.ON_COOLDOWN}}', {
-            delay: 0,
-            deleteDelay: 5000,
-            time: `**${this.cooldown - diff}**`
-          })
-          return false
-        } else {
-          this.timers.delete(awaitID)
-          this.timers.set(awaitID, now)
-        }
-      }
-    }
+    /**
+     * Cooldown system with @Moment module!
+     */
+
+   // if (isAdmin) return true
+    msg.author.cooldown = moment().add(this.cooldown, 'seconds');
+    console.log(msg.author.cooldown);
     return true
   }
 
