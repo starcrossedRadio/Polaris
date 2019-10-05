@@ -1,6 +1,7 @@
 const Module = include("src/structures/Module");
 const moment = require("moment");
 const { randomize } = include("src/util/Utils.js");
+const chalk = require("chalk");
 
 module.exports = class Guild extends Module {
     constructor(...args) {
@@ -20,6 +21,10 @@ module.exports = class Guild extends Module {
         const store = await this.data.guilds.cache().findByPk(message.channel.guild.id);
         /**
          * Checking if the member was in the DB. If not, create the default xp-card.
+         * 
+         * @store -> @PolarisStore AKA Database instance;
+         * @target -> Member in the @PolarisStore context;
+         * @guild -> The guild who the @message was readed;
          */
         
         const members     = store.levelSystem.members;
@@ -33,6 +38,17 @@ module.exports = class Guild extends Module {
         }
     }
     async addExp(guild, target, store, members) {
+
+        /**
+         * @guildMember -> The member in the API context;
+         * @target -> The member in @PolarisStore context;
+         * @Generated -> Random number between 15-25 generated;
+         * @newEXP -> Member previous exp count + @Generated ;
+         * @members -> @Array instance of @PolarisStore server's context;
+         * @memberIndex -> Member's position at @PolarisStore server's specific @members
+         * 
+         */
+        
         const guildMember = guild.members.get(target.id);
 
         if(moment().diff(guildMember.cooldown || 0) < 0) return false;
@@ -42,23 +58,15 @@ module.exports = class Guild extends Module {
         const memberIndex = members.findIndex(member => member.id === target.id);
 
         members[memberIndex].experience = newEXP;
-        
-        store.cache().update({ "levelSystem.members": members });
-        store.cache().save().then(() => {
-            guildMember.cooldown = moment().add(randomize(60, 180), 'seconds');
-        })
 
-        console.log(members[memberIndex].experience)
-    }   
+        store.cache().update({ "levelSystem.members": members });
+        store.cache().save().then((saved) => {
+            const time = randomize(60, 180)
+            guildMember.cooldown = moment().add(time, 'seconds');
+            this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp!"} ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
+        })
+    }
     async getNeeded(level) {
         return 5 * (Math.pow(level, 2)) + 60 * level + 100;
-    }
-    async getLevel(exp) {
-        let level = 0;
-        while (exp >= this.getNeeded(level)) {
-            exp -= this.getNeeded(level);
-            level++;
-        }
-        return level;
     }
 }
