@@ -57,5 +57,8 @@
     "timeout": "Timeout after {{timeout}}s",
     "max": "Exceeded {{max}} tries",
     "maxMatches": "Exceeded {{maxMatches}} matches"
+  },
+  "level": {
+    "levelUp": "Congratulations, {{user}} you're now on level {{level}}! * Level passed meme 8) *"
   }
 }
