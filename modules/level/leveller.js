@@ -94,6 +94,7 @@ module.exports = class Guild extends Module {
         return level;
     }
     async levelUp(message, store, member) {
-        return message.channel.createMessage(this.i18n.parse("whois.title"))
+        const text = require(`../../res/i18n/${store.settings.locale}/default.json`);
+        return message.channel.createMessage(text.level.levelUp.replace("{{user}}", `<@${member.id}>`).replace("{{level}}", `**${await this.calculateLevel(store.levelSystem.members.find(m => m.id === member.id).experience)}**`));
     }
 }
