@@ -19,9 +19,11 @@ module.exports = class Guild extends Module {
     }
     async init() {
         this.data  = await this._client.plugins.get("db").models;
+        this.i18n  = await this._client.plugins.get("i18n");
     }
     async context(message) {
         if (!message.channel.guild) return;
+        if (message.author.bot) return;
         const store = await this.data.guilds.cache().findByPk(message.channel.guild.id);
         /**
          * Checking if the member was in the DB. If not, create the default xp-card.
@@ -41,12 +43,17 @@ module.exports = class Guild extends Module {
         }
 
         const memberIndex = members.findIndex(member => member.id === target.id);
-        const oldLevel    = target.experience;
+        const oldLevel    = await this.calculateLevel(target.experience);
 
         this.addExp(memberIndex, guild, target, store, members);
 
-        const newLevel    = this.calculateLevel(members[memberIndex].experience);
+        const newLevel    = await this.calculateLevel(members[memberIndex].experience);
 
+        if (oldLevel != newLevel) {
+            console.log(oldLevel);
+            console.log(newLevel);
+            this.levelUp(message, store, members[memberIndex]);
+        }
     }
     async addExp(memberIndex, guild, target, store, members) {
 
@@ -86,7 +93,7 @@ module.exports = class Guild extends Module {
         }
         return level;
     }
-    async levelUp(store, newLevel, guildMember) {
-        
+    async levelUp(message, store, member) {
+        return message.channel.createMessage(this.i18n.parse("whois.title"))
     }
 }
