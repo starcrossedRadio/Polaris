@@ -19,7 +19,6 @@ module.exports = class Guild extends Module {
     }
     async init() {
         this.data  = await this._client.plugins.get("db").models;
-        this.i18n  = await this._client.plugins.get("i18n");
     }
     async context(message) {
         if (!message.channel.guild) return;
