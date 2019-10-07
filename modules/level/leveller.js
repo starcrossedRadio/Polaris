@@ -46,13 +46,10 @@ module.exports = class Guild extends Module {
         const oldLevel    = await this.calculateLevel(target.experience);
 
         this.addExp(memberIndex, guild, target, store, members);
-
         const newLevel    = await this.calculateLevel(members[memberIndex].experience);
 
         if (oldLevel != newLevel) {
-            console.log(oldLevel);
-            console.log(newLevel);
-            this.levelUp(message, store, members[memberIndex]);
+            this.levelUp(message, store, members[memberIndex], newLevel);
         }
     }
     async addExp(memberIndex, guild, target, store, members) {
@@ -60,7 +57,7 @@ module.exports = class Guild extends Module {
         /**
          * @guildMember -> The member in the API context;
          * @target -> The member in @PolarisStore context;
-         * @Generated -> Random number between 15-25 generated;
+         * @Generated -> Random number between 15-25;
          * @newEXP -> Member previous exp count + @Generated ;
          * @members -> @Array instance of @PolarisStore server's context;
          * @memberIndex -> Member's position at @PolarisStore server's specific @members
@@ -70,13 +67,13 @@ module.exports = class Guild extends Module {
 
         if(moment().diff(guildMember.cooldown || 0) < 0) return false;
 
-        const Generated   = randomize(15, 25);
+        const Generated   = randomize(500, 600);
         const newEXP      = target.experience + Generated;
 
         members[memberIndex].experience = newEXP;
         
         store.cache().update({ "levelSystem.members": members });
-        store.cache().save().then((saved) => {
+        store.cache().save().then(() => {
             const time = randomize(60, 180)
           //  guildMember.cooldown = moment().add(time, 'seconds');   
             this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}" // ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
@@ -93,8 +90,31 @@ module.exports = class Guild extends Module {
         }
         return level;
     }
-    async levelUp(message, store, member) {
-        const text = require(`../../res/i18n/${store.settings.locale}/default.json`);
-        return message.channel.createMessage(text.level.levelUp.replace("{{user}}", `<@${member.id}>`).replace("{{level}}", `**${await this.calculateLevel(store.levelSystem.members.find(m => m.id === member.id).experience)}**`));
+    async levelUp(message, store, member, newLevel) {
+        const config  = store.levelSystem.config;
+        const rewards = store.levelSystem.roles;
+        message.channel.createMessage(config.message.replace("{{user}}", `<@${member.id}>`).replace("{{level}}", `**${newLevel}**`)).then((msg) => {
+            if (newLevel >= 10 && rewards[newLevel] != null) {
+                return new Promise((resolve, reject) => {
+                    const member = msg.channel.guild.members.get(message.author.id);
+                    const New    = msg.channel.guild.roles.get(rewards[newLevel]);
+                    const Old    = msg.channel.guild.roles.get(rewards[newLevel - 10]);
+
+                    try {
+                        if(New) return member.addRole(New.id, 'Polaris level system!').then(() => {
+                            if (Old) {
+                                member.removeRole(Old.id, 'Polaris level system');
+                                return resolve();
+                            } else {
+                                return resolve();
+                            }
+                        })
+                    } catch(e) {
+                        this._client.logger.error(e);
+                        return resolve();
+                    }
+                })
+            }
+        });
     }
 }
