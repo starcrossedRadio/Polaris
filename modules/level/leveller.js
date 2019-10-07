@@ -67,16 +67,15 @@ module.exports = class Guild extends Module {
 
         if(moment().diff(guildMember.cooldown || 0) < 0) return false;
 
-        const Generated   = randomize(500, 600);
+        const Generated   = randomize(15, 25);
         const newEXP      = target.experience + Generated;
 
         members[memberIndex].experience = newEXP;
         
         store.cache().update({ "levelSystem.members": members });
         store.cache().save().then(() => {
-            const time = randomize(60, 180)
-          //  guildMember.cooldown = moment().add(time, 'seconds');   
-            this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}" // ${chalk.red.bold("Cooldown: ") + chalk.green(time+"s")}`));
+            guildMember.cooldown = moment().add(1, 'minute');   
+            this._client.logger.info(chalk.yellow(`[LEVEL]: ${chalk.white(guildMember.user.tag)} earned ${Generated + "exp"} on "${chalk.green.bold(guildMember.guild.name)}"`));
         })
     }
     async getNeeded(level) {
@@ -95,7 +94,7 @@ module.exports = class Guild extends Module {
         const rewards = store.levelSystem.roles;
         message.channel.createMessage(config.message.replace("{{user}}", `<@${member.id}>`).replace("{{level}}", `**${newLevel}**`)).then((msg) => {
             if (newLevel >= 10 && rewards[newLevel] != null) {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                     const member = msg.channel.guild.members.get(message.author.id);
                     const New    = msg.channel.guild.roles.get(rewards[newLevel]);
                     const Old    = msg.channel.guild.roles.get(rewards[newLevel - 10]);
