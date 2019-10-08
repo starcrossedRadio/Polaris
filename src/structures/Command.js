@@ -137,9 +137,9 @@ class Command extends Base {
      * Cooldown system with @Moment module!
      */
 
-   // if (isAdmin) return true
+    if (isAdmin) return true
+
     msg.author.cooldown = moment().add(this.cooldown, 'seconds');
-    console.log(msg.author.cooldown);
     return true
   }
 
