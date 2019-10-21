@@ -12,13 +12,8 @@ module.exports = class UserInfo extends Command {
       name: 'translator',
       aliases: ['tl'],
       group: 'search',
-      usage: [{
-        name: 'tl',
-        displayName: 'text',
-        type: 'string',
-        optional: false,
-        last: true
-      }],
+      usage: [{ name: 'tl', displayName: 'text', type: 'string', optional: false, last: true},
+              { name: "source", displayName: ' '}],
       options: { guildOnly: true, localeKey: 'commands' },
       cooldown: 5
     });

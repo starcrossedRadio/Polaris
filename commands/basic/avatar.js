@@ -25,7 +25,7 @@ module.exports = class Avatar extends Command {
         const embed = new client.embed
         embed
             .title(`${user.username}'s Avatar!`)
-            .description(responder.t("{{download_avatar}}", { url: user.dynamicAvatarURL(null, 512) }))
+            .description(responder.t("{{avatar.download_avatar}}", { url: user.dynamicAvatarURL(null, 512) }))
             .color(11220318)
             .image(user.dynamicAvatarURL(null, 512))
             .footer(`${msg.author.username}#${msg.author.discriminator}`, msg.author.avatarURL)

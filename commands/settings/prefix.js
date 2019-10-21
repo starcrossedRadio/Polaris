@@ -10,7 +10,6 @@ module.exports = class Avatar extends Command {
         })
     }
     async handle({ msg, args, store, client }, responder) {
-
         if (args.prefix === store.settings.prefix)
             return responder.error(responder.t("{{same_prefix}}", {
                 user: msg.author.mention

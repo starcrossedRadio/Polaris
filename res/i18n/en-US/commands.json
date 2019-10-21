@@ -38,11 +38,17 @@
         "peoplesSize": "```👥 {{peoples}} users```",
         "bots": "👾 Total Bots:"
       },
-    "title_avatar": "{{user}}'s Avatar",
-    "download_avatar": "[Download here!]({{url}})",
-    "set_prefix": "Easy and sweet like eat a candy! Your prefix is `{{prefix}}` now, chu! < 3",
-    "error_prefix": "Something goes whrong when I tried to change your prefix, darling... Try again later!",
-    "same_prefix": "that prefix was already set, darling. :(",
-    "language_list": "<@{{user}}> These are the locales available at the moment! ```{{locales}}```",
-    "set_lang": "<@{{user}}> Ahh, grazadeus. É tão bom falar a língua natal ~ :flag_br:"
+      "avatar": {
+        "title_avatar": "{{user}}'s Avatar",
+        "download_avatar": "[Download here!]({{url}})"
+      },
+      "prefix": {
+          "set_prefix": "Easy and sweet like eat a candy! Your prefix is ` {{prefix}} ` now, chu! < 3",
+          "error_prefix": "Something goes whrong when I tried to change your prefix, darling... Try again later!",
+          "same_prefix": "that prefix was already set, darling. :("
+      },
+      "locale": {
+        "language_list": "<@{{user}}> These are the locales available at the moment! ```{{locales}}```",
+        "set_lang": "<@{{user}}> Okay, sir. I'll speak english for now! :flag_us:"
+      }
 }

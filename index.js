@@ -23,11 +23,10 @@ const resolve = (dir) => path.join(dir);
 Navi.register("commands", resolve("/commands"), { groupedCommands: true })
 .createPlugin("db", Database, {
   username: process.env.USERNAMES,
-  password: process.env.PASSWORD,
+  password: process.env.PASSWORDS,
   database: process.env.DBNAME,
   dialect: "postgres",
   logging: false
-  
 })
 .register("db", path.join(__dirname, 'models'));
 
