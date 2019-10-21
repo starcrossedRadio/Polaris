@@ -1,6 +1,6 @@
 const Client = require('./src/Navi');
-const path   = require('path');
 const { Database } = require("./plugins");
+const path   = require('path');
 
 global.base_dir = __dirname;
 global.abs_path = function(path) {
