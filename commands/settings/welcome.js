@@ -28,6 +28,34 @@ module.exports = class Avatar extends Command {
             mapFunc: ch => responder.t(`{{welcome.configure.${ch}}}`)
         }).then(arg => arg.length ? this[arg[0]]({ msg, args, store, client}, responder) : false);
       }
+    async enable({msg, store }, responder) {
+      if(!store.inframodules.welcome) {
+        responder.error("{{welcome.configure.enable.rejection}}");
+        return 0;
+      }
+      const inframodules = store.inframodules.welcome;
+      inframodules.channel = msg.channel.id;
+      store.update({ "inframodules": inframodules });
+      store.cache().save().then(() => {
+        store.save();
+        responder.success("{{welcome.configure.enable.success}}");
+        return 1;
+      });
+    }
+    async disable({msg, store}, responder) {
+        if(!store.inframodules.welcome) {
+          responder.error("{{welcome.configure.disable.rejection}}");
+          return 0;
+        }
+        const inframodules = store.inframodules.welcome;
+        inframodules.channel = null;
+        store.update({ "inframodules": inframodules });
+        store.cache().save().then(() => {
+          store.save();
+          responder.success("{{welcome.configure.disable.success}}");
+          return 1;
+        });
+    }
     async edit ({ msg, args, store, client }, responder) {
       responder.format("emoji:info").dialog([{ prompt:responder.t("{{welcome.configure.edit_prompt.typerequest}}", { user: msg.author.id }), input: {type: "string", name: "message"}}]).then(args => {
        const message = args.message;
@@ -46,7 +74,9 @@ module.exports = class Avatar extends Command {
            return 1;
          })
        } else {
-         store.cache().update({ "inframodules.welcome": { "message": message  }  });
+         const inframodules = store.inframodules.welcome
+         inframodules.message = message;
+         store.cache().update({ "inframodules.welcome": inframodules });
          store.cache().save().then(() => {
            responder.success(responder.t("{{welcome.configure.edit_prompt.success}}"));
            return 1;
@@ -57,14 +87,14 @@ module.exports = class Avatar extends Command {
     async delete({store}, responder) {
       const inframodules = store.inframodules;
       if (!inframodules.welcome) {
-        responder.error(responder.t("{{welcome.delete.reject}}"));
+        responder.error(responder.t("{{welcome.configure.delete_prompt.reject}}"));
         return 0;
       }
       delete inframodules.welcome;
       store.update({ "inframodules": inframodules });
       store.cache().save().then(() => {
         store.save();
-        responder.success(responder.t("{{welcome.delete.success}}"));
+        responder.success(responder.t("{{welcome.configure.delete_prompt.success}}"));
         return 1;
       })
     }
